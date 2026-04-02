@@ -1,0 +1,40 @@
+---
+title: "Analiza danych genomowych z wykorzystaniem GenomicRanges"
+author: "Kacper Sitkowski"
+date: "`r Sys.Date()`"
+output: html_document
+---
+  
+  Celem niniejszego raportu jest analiza przykładowych danych genomowych z wykorzystaniem pakietu **GenomicRanges** oraz wizualizacja poziomu ekspresji genów. Analiza obejmuje podstawowe operacje na danych oraz ich interpretację biologiczną.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(GenomicRanges)
+library(ggplot2)
+gr <- GRanges(
+  seqnames = c("chr17", "chr17", "chr7", "chrMT", "chr7"),
+  ranges = IRanges(
+    start = c(7668402, 43044295, 55019031, 5904, 5522300),
+    end   = c(7687550, 43170245, 55211628, 7445, 5526350)
+  ),
+  strand = c("-", "-", "+", "+", "-"),
+  gene_name = c("TP53", "BRCA1", "EGFR", "MT-CO1", "ACTB"),
+  expression = c(5, 10, 50, 1000, 300)
+)
+
+print(gr)
+width(gr)
+table(seqnames(gr))
+subset(gr, seqnames(gr) == "chr17")
+dane <- data.frame(
+  gen = c("TP53", "BRCA1", "EGFR", "MT-CO1", "ACTB"),
+  ekspresja = c(5, 10, 50, 1000, 300)
+)
+
+ggplot(dane, aes(x = gen, y = ekspresja)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Poziom ekspresji genów",
+    x = "Gen",
+    y = "Ekspresja (TPM)"
+  ) +
+  theme_minimal()
